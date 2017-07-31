@@ -1,15 +1,14 @@
 package guru.springframework.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by jt on 6/13/17.
- */
 @Data
+@EqualsAndHashCode(exclude = {"notes", "ingredients"})
 @Entity
 public class Recipe {
 
@@ -27,21 +26,21 @@ public class Recipe {
     @Lob
     private String directions;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
-    private Set<Ingredient> ingredients = new HashSet<>();
+    @Enumerated(value = EnumType.STRING)
+    private Difficulty difficulty;
 
     @Lob
     private Byte[] image;
 
-    @Enumerated(value = EnumType.STRING)
-    private Difficulty difficulty;
-
     @OneToOne(cascade = CascadeType.ALL)
     private Notes notes;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+    private Set<Ingredient> ingredients = new HashSet<>();
+
     @ManyToMany
     @JoinTable(name = "recipe_category",
-        joinColumns = @JoinColumn(name = "recipe_id"),
+            joinColumns = @JoinColumn(name = "recipe_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories = new HashSet<>();
 
